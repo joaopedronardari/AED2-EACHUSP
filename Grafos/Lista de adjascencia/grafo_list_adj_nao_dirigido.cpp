@@ -20,6 +20,12 @@ typedef struct VERTICE {
 
 NO* existeAresta(int i, int j, VERTICE* g, NO* ant) {
 	// TODO
+	NO* p = g[i].inicio;
+	
+	while (p) {
+		p = p->prox;
+	}
+	
 }
 
 boolean excluirAresta(int i, int j, VERTICE* g) {
