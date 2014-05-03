@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<malloc.h>
 
-#define V 4
+#define V 5
 
 #define TRUE 0
 #define FALSE 1
@@ -18,14 +18,14 @@ typedef struct VERTICE {
 	NO *inicio;
 } VERTICEPOINTER;
 
-NO* existeAresta(int i, int j, VERTICE *g, NO* ant) {
-	ant = NULL;
-	NO *p = g[i-1].inicio;
+NO* existeAresta(int i, int j, VERTICE *g, NO** ant) {
+	*ant = NULL;
+	NO *p = g[i].inicio;
 	
 	while(p) {
-		if (p->v == (j-1))
+		if (p->v == (j))
 			return p;
-		ant = p;
+		*ant = p;
 		p = p->prox;
 	}
 	
@@ -33,29 +33,29 @@ NO* existeAresta(int i, int j, VERTICE *g, NO* ant) {
 }
 
 boolean excluirAresta(int i, int j, VERTICE *g) {
-	NO *ant = NULL;
-	NO *p = existeAresta(i,j,g,ant);
+	NO *ant;
+	NO *p = existeAresta(i,j,g,&ant);
 	
 	if (!p)
 		return FALSE;
 	
 	if (ant) ant->prox = p->prox;
-	else g[i-1].inicio = p->prox;
+	else g[i].inicio = p->prox;
 	free(p);
 	return TRUE;
 }
 
 boolean adicionarAresta(int i, int j, VERTICE *g) {
 	NO *ant;
-	NO *p = existeAresta(i,j,g,ant);
+	NO *p = existeAresta(i,j,g,&ant);
 	
 	if (p)
 		return FALSE;
 	
 	NO *novoNo = (NO *) malloc(sizeof(NO));
 	novoNo->v = j;
-	novoNo->prox = g[i-1].inicio;
-	g[i-1].inicio = novoNo;
+	novoNo->prox = g[i].inicio;
+	g[i].inicio = novoNo;
 	return TRUE;
 }
 
@@ -69,7 +69,7 @@ void imprimir(VERTICE *g) {
 	printf("imprimindo grafo...\n");
 	
 	int i;
-	for (i = 0; i<V; i++) {
+	for (i = 1; i<V; i++) {
 		printf("|");
 		NO *p = g[i].inicio;
 		
@@ -129,6 +129,7 @@ int main() {
 	imprimir(g);
 	
 	excluirAresta(3,4,g);
+	excluirAresta(2,4,g);
 	imprimir(g);
 	
 	printf("Grau de saida do vertice 1 %d\n", grauSaidaVertice(1,g));
