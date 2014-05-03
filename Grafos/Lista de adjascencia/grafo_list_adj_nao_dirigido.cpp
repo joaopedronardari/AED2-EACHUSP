@@ -40,60 +40,62 @@ NO* buscaArestaDirecao(int i, int j, VERTICE* g, NO** ant) {
 	return NULL;
 }
 
-boolean existeAresta(int i, int j, VERTICE* g, NO** ant1, NO** ant2, NO** direction1, NO** direction2) {
+boolean existeAresta(int i, int j, VERTICE* g, NO** ant1, NO** ant2, NO** dir1, NO** dir2) {
+	// Inicializa ponteiros
+	*dir1 = NULL;
+	*dir2 = NULL;
+	*ant1 = NULL;
+	*ant2 = NULL;
 	
-	*direction1 = buscaArestaDirecao(i,j,g,ant1);
-	*direction2 = buscaArestaDirecao(j,i,g,ant2);
+	// Busca nas duas direcoes
+	*dir1 = buscaArestaDirecao(i,j,g,ant1);
+	*dir2 = buscaArestaDirecao(j,i,g,ant2);
 	
-	if (*direction1 && *direction2)
+	if (*dir1 && *dir2)
 		return TRUE;
 	
 	return FALSE;
 }
 
 boolean excluirAresta(int i, int j, VERTICE* g) {
-	NO* direction1 = NULL;
-	NO* direction2 = NULL;
-	NO* ant1 = NULL;
-	NO* ant2 = NULL;
+	NO* dir1,dir2,ant1,ant2;
 	
-	if (!existeAresta(i,j,g,&ant1,&ant2,&direction1,&direction2))
+	if (!existeAresta(i,j,g,&ant1,&ant2,&dir1,&dir2))
 		return FALSE;
 	
-	if (ant1) ant1->prox = direction1->prox;
-	else g[i].inicio = direction1->prox;
-	free(direction1);
+	// Seta os ponteiros e libera da memoria direcao 1
+	if (ant1) ant1->prox = dir1->prox;
+	else g[i].inicio = dir1->prox;
+	free(dir1);
 	
 	if (i != j) {
-		if (ant2) ant2->prox = direction2->prox;
-		else g[j].inicio = direction2->prox;
-		free(direction2);
+		// Seta os ponteiros e libera da memoria direcao 2
+		if (ant2) ant2->prox = dir2->prox;
+		else g[j].inicio = dir2->prox;
+		free(dir2);
 	}
 	
 	return TRUE;
 }
 
 boolean adicionarAresta(int i, int j, VERTICE* g) {
-	NO* direction1 = NULL;
-	NO* direction2 = NULL;
-	NO* ant1 = NULL;
-	NO* ant2 = NULL;
+	NO* dir1,dir2,ant1,ant2;
 	
-	if (existeAresta(i,j,g,&ant1,&ant2,&direction1,&direction2))
+	if (existeAresta(i,j,g,&ant1,&ant2,&dir1,&dir2))
 		return FALSE;
 	
 	// Aloca para direcao 1 e configura
-	direction1 = (NO *) malloc(sizeof(NO));
-	direction1->v = j;
-	direction1->prox = g[i].inicio;
-	g[i].inicio = direction1;
+	dir1 = (NO *) malloc(sizeof(NO));
+	dir1->v = j;
+	dir1->prox = g[i].inicio;
+	g[i].inicio = dir1;
 	
 	if (i != j) {
 		// Aloca para direcao 2 e configura
-		direction2 = (NO *) malloc(sizeof(NO));
-		direction2->v = i;
-		direction2->prox = g[j].inicio;
-		g[j].inicio = direction2;
+		dir2 = (NO *) malloc(sizeof(NO));
+		dir2->v = i;
+		dir2->prox = g[j].inicio;
+		g[j].inicio = dir2;
 	}
 }
 

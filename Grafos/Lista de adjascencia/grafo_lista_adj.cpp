@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<malloc.h>
-
+// V = 5 PARA DESCONSIDERAR O 0
 #define V 5
 
 #define TRUE 0
